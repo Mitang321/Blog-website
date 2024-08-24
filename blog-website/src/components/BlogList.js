@@ -5,9 +5,10 @@ import "./BlogList.css";
 
 function BlogList() {
   const [blogs, setBlogs] = useState([]);
-  const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [selectedTag, setSelectedTag] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [tags, setTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState("all");
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -21,6 +22,14 @@ function BlogList() {
           }
         );
         setBlogs(response.data);
+        const fetchedTags = Array.from(
+          new Set(
+            response.data.flatMap((blog) =>
+              blog.labels.map((label) => label.name)
+            )
+          )
+        );
+        setTags(fetchedTags);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
@@ -29,56 +38,44 @@ function BlogList() {
     fetchBlogs();
   }, []);
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-  };
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+  const handleSortChange = (e) => setSortOrder(e.target.value);
+  const handleTagChange = (e) => setSelectedTag(e.target.value);
 
-  const handleSortChange = (event) => {
-    setSortOrder(event.target.value);
-  };
-
-  const handleTagChange = (event) => {
-    setSelectedTag(event.target.value);
-  };
-
-  const filteredBlogs = blogs.filter((blog) =>
-    blog.title.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const filteredByTag = selectedTag
-    ? filteredBlogs.filter((blog) =>
-        blog.labels.some((label) => label.name === selectedTag)
-      )
-    : filteredBlogs;
-
-  const sortedBlogs = [...filteredByTag].sort((a, b) => {
-    if (sortOrder === "asc") {
-      return new Date(a.created_at) - new Date(b.created_at);
-    } else {
-      return new Date(b.created_at) - new Date(a.created_at);
-    }
-  });
-
-  const tags = [
-    ...new Set(blogs.flatMap((blog) => blog.labels.map((label) => label.name))),
-  ];
+  const filteredBlogs = blogs
+    .filter((blog) =>
+      blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((blog) =>
+      selectedTag === "all"
+        ? true
+        : blog.labels.some((label) => label.name === selectedTag)
+    )
+    .sort((a, b) =>
+      sortOrder === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title)
+    );
 
   return (
     <div className="blog-list">
       <h1>Blog List</h1>
+      <Link to="/create" className="create-blog-link">
+        Create New Blog
+      </Link>
       <div className="search-sort">
         <input
           type="text"
-          placeholder="Search blogs..."
-          value={search}
+          placeholder="Search by title..."
+          value={searchTerm}
           onChange={handleSearchChange}
         />
         <select value={sortOrder} onChange={handleSortChange}>
-          <option value="asc">Sort by Date (Asc)</option>
-          <option value="desc">Sort by Date (Desc)</option>
+          <option value="desc">Sort by Title (Descending)</option>
+          <option value="asc">Sort by Title (Ascending)</option>
         </select>
         <select value={selectedTag} onChange={handleTagChange}>
-          <option value="">All Tags</option>
+          <option value="all">All Tags</option>
           {tags.map((tag) => (
             <option key={tag} value={tag}>
               {tag}
@@ -87,21 +84,18 @@ function BlogList() {
         </select>
       </div>
       <ul>
-        {sortedBlogs.map((blog) => (
-          <li key={blog.id}>
-            <Link to={`/blog/${blog.number}`}>
-              <h2>{blog.title}</h2>
-              <p>{new Date(blog.created_at).toLocaleDateString()}</p>
-              <div className="tags">
-                {blog.labels.map((label) => (
-                  <span key={label.id} className="tag">
-                    {label.name}
-                  </span>
-                ))}
-              </div>
-            </Link>
-          </li>
-        ))}
+        {filteredBlogs.length > 0 ? (
+          filteredBlogs.map((blog) => (
+            <li key={blog.number}>
+              <Link to={`/blog/${blog.number}`} className="blog-link">
+                <h2>{blog.title}</h2>
+                <p>{blog.body.slice(0, 100)}...</p>
+              </Link>
+            </li>
+          ))
+        ) : (
+          <p>No blogs found.</p>
+        )}
       </ul>
     </div>
   );
