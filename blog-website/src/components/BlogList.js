@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./BlogList.css";
+
 function BlogList() {
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [selectedTag, setSelectedTag] = useState("");
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const response = await axios.get(
-          "https://api.github.com/repos/Mitang321/Blog-website/issues",
+          "https://api.github.com/repos/Mitang321/Blog-Website/issues",
           {
             headers: {
               Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
@@ -35,17 +37,31 @@ function BlogList() {
     setSortOrder(event.target.value);
   };
 
+  const handleTagChange = (event) => {
+    setSelectedTag(event.target.value);
+  };
+
   const filteredBlogs = blogs.filter((blog) =>
     blog.title.toLowerCase().includes(search.toLowerCase())
   );
 
-  const sortedBlogs = [...filteredBlogs].sort((a, b) => {
+  const filteredByTag = selectedTag
+    ? filteredBlogs.filter((blog) =>
+        blog.labels.some((label) => label.name === selectedTag)
+      )
+    : filteredBlogs;
+
+  const sortedBlogs = [...filteredByTag].sort((a, b) => {
     if (sortOrder === "asc") {
       return new Date(a.created_at) - new Date(b.created_at);
     } else {
       return new Date(b.created_at) - new Date(a.created_at);
     }
   });
+
+  const tags = [
+    ...new Set(blogs.flatMap((blog) => blog.labels.map((label) => label.name))),
+  ];
 
   return (
     <div className="blog-list">
@@ -61,6 +77,14 @@ function BlogList() {
           <option value="asc">Sort by Date (Asc)</option>
           <option value="desc">Sort by Date (Desc)</option>
         </select>
+        <select value={selectedTag} onChange={handleTagChange}>
+          <option value="">All Tags</option>
+          {tags.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
+          ))}
+        </select>
       </div>
       <ul>
         {sortedBlogs.map((blog) => (
@@ -68,6 +92,13 @@ function BlogList() {
             <Link to={`/blog/${blog.number}`}>
               <h2>{blog.title}</h2>
               <p>{new Date(blog.created_at).toLocaleDateString()}</p>
+              <div className="tags">
+                {blog.labels.map((label) => (
+                  <span key={label.id} className="tag">
+                    {label.name}
+                  </span>
+                ))}
+              </div>
             </Link>
           </li>
         ))}

@@ -1,0 +1,15 @@
+.blog-detail {
+  padding: 20px;
+}
+
+.tags {
+  margin-top: 10px;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  display: inline-block;
+}
