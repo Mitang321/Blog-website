@@ -89,6 +89,23 @@
   line-height: 1.6;
 }
 
+.edit-button {
+  background-color: #ffb74d;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #ffa726;
+  transform: translateY(-2px);
+}
+
 .pagination {
   display: flex;
   justify-content: center;

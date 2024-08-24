@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import BlogList from "./components/BlogList";
 import BlogDetail from "./components/BlogDetail";
 import CreateBlog from "./components/CreateBlog";
+import EditBlog from "./components/EditBlog";
 import "./App.css";
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
           <Routes>
             <Route path="/" element={<BlogList />} />
             <Route path="/blog/:number" element={<BlogDetail />} />
-            <Route path="/create" element={<CreateBlog />} />{" "}
+            <Route path="/create" element={<CreateBlog />} />
+            <Route path="/edit/:number" element={<EditBlog />} />{" "}
           </Routes>
         </main>
         <Footer />
