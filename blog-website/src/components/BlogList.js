@@ -10,10 +10,8 @@ function BlogList() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState("all");
-
   const [currentPage, setCurrentPage] = useState(1);
   const blogsPerPage = 9;
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,10 +29,39 @@ function BlogList() {
             },
           }
         );
-        setBlogs(response.data);
+        const fetchedBlogs = response.data;
+
+        const blogsWithCommentsAndRatings = await Promise.all(
+          fetchedBlogs.map(async (blog) => {
+            const commentsResponse = await axios.get(
+              `https://api.github.com/repos/Mitang321/Blog-Website/issues/${blog.number}/comments`,
+              {
+                headers: {
+                  Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
+                },
+              }
+            );
+            const comments = commentsResponse.data;
+            const totalRating = comments.reduce(
+              (acc, comment) => acc + (comment.rating || 0),
+              0
+            );
+            const averageRating =
+              comments.length > 0 ? totalRating / comments.length : 0;
+            return {
+              ...blog,
+              commentsCount: comments.length,
+              averageRating: isNaN(averageRating) ? 0 : averageRating,
+            };
+          })
+        );
+
+        setBlogs(blogsWithCommentsAndRatings);
+
+        // Extract unique tags
         const fetchedTags = Array.from(
           new Set(
-            response.data.flatMap((blog) =>
+            blogsWithCommentsAndRatings.flatMap((blog) =>
               blog.labels.map((label) => label.name)
             )
           )
@@ -123,6 +150,12 @@ function BlogList() {
                       {new Date(blog.created_at).toLocaleDateString()}
                     </p>
                     <p>{blog.body.slice(0, 100)}...</p>
+                    <p className="blog-comments">
+                      Comments: {blog.commentsCount}
+                    </p>
+                    <p className="blog-rating">
+                      Rating: {blog.averageRating.toFixed(1)} / 5
+                    </p>
                   </Link>
                 </li>
               ))

@@ -12,6 +12,8 @@ function BlogDetail() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [likes, setLikes] = useState(0);
+  const [rating, setRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -41,6 +43,16 @@ function BlogDetail() {
         setComments(commentsResponse.data);
 
         setLikes(Math.floor(Math.random() * 100));
+
+        const totalRating = commentsResponse.data.reduce(
+          (acc, comment) => acc + (comment.rating || 0),
+          0
+        );
+        setAverageRating(
+          commentsResponse.data.length
+            ? totalRating / commentsResponse.data.length
+            : 0
+        );
       } catch (error) {
         console.error("Error fetching blog details:", error);
         setError("Failed to fetch blog details. Please try again later.");
@@ -76,7 +88,7 @@ function BlogDetail() {
         );
         setComments([
           ...comments,
-          { body: newComment, user: { login: "You" } },
+          { body: newComment, user: { login: "You" }, rating },
         ]);
         setNewComment("");
       } catch (error) {
@@ -89,6 +101,20 @@ function BlogDetail() {
   const handleLike = () => {
     setLikes(likes + 1);
   };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  useEffect(() => {
+    if (comments.length > 0) {
+      const totalRating = comments.reduce(
+        (acc, comment) => acc + (comment.rating || 0),
+        0
+      );
+      setAverageRating(totalRating / comments.length);
+    }
+  }, [comments]);
 
   if (loading) return <p className="loading">Loading...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -106,6 +132,19 @@ function BlogDetail() {
       <button className="like-button" onClick={handleLike}>
         Like ({likes})
       </button>
+      <div className="rating-section">
+        <h3>Rate this Blog:</h3>
+        {[...Array(5)].map((star, index) => (
+          <button
+            key={index}
+            className={index < rating ? "star selected" : "star"}
+            onClick={() => handleRatingChange(index + 1)}
+          >
+            ★
+          </button>
+        ))}
+        <p>Average Rating: {averageRating.toFixed(1)} / 5</p>
+      </div>
       <div className="blog-body">
         <ReactMarkdown>{blog.body}</ReactMarkdown>
       </div>
@@ -140,6 +179,9 @@ function BlogDetail() {
               <li key={comment.id} className="comment-item">
                 <p className="comment-author">{comment.user.login}:</p>
                 <p className="comment-body">{comment.body}</p>
+                <p className="comment-rating">
+                  Rating: {comment.rating || "Not rated"}
+                </p>
               </li>
             ))
           ) : (
