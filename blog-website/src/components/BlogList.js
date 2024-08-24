@@ -11,10 +11,16 @@ function BlogList() {
   const [selectedTag, setSelectedTag] = useState("all");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const blogsPerPage = 5;
+  const blogsPerPage = 9;
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const response = await axios.get(
           "https://api.github.com/repos/Mitang321/Blog-Website/issues",
@@ -35,6 +41,9 @@ function BlogList() {
         setTags(fetchedTags);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+        setError("Failed to fetch blogs. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -98,31 +107,42 @@ function BlogList() {
           ))}
         </select>
       </div>
-      <ul>
-        {currentBlogs.length > 0 ? (
-          currentBlogs.map((blog) => (
-            <li key={blog.number}>
-              <Link to={`/blog/${blog.number}`} className="blog-link">
-                <h2>{blog.title}</h2>
-                <p>{blog.body.slice(0, 100)}...</p>
-              </Link>
-            </li>
-          ))
-        ) : (
-          <p>No blogs found.</p>
-        )}
-      </ul>
-      <div className="pagination">
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => handlePageChange(number)}
-            className={number === currentPage ? "active" : ""}
-          >
-            {number}
-          </button>
-        ))}
-      </div>
+      {loading ? (
+        <p>Loading blogs...</p>
+      ) : error ? (
+        <p className="error">{error}</p>
+      ) : (
+        <>
+          <ul>
+            {currentBlogs.length > 0 ? (
+              currentBlogs.map((blog) => (
+                <li key={blog.number}>
+                  <Link to={`/blog/${blog.number}`} className="blog-link">
+                    <h2>{blog.title}</h2>
+                    <p className="blog-date">
+                      {new Date(blog.created_at).toLocaleDateString()}
+                    </p>
+                    <p>{blog.body.slice(0, 100)}...</p>
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <p>No blogs found.</p>
+            )}
+          </ul>
+          <div className="pagination">
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => handlePageChange(number)}
+                className={number === currentPage ? "active" : ""}
+              >
+                {number}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

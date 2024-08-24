@@ -1,47 +1,67 @@
 .blog-list {
-  padding: 20px;
-  background-color: #f9f9f9;
+  padding: 30px;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  max-width: 1200px;
+  margin: 40px auto;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .create-blog-link {
   display: inline-block;
   margin-bottom: 20px;
-  padding: 10px 20px;
+  padding: 12px 25px;
   color: white;
   background-color: #4caf50;
-  border-radius: 5px;
+  border-radius: 30px;
   text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .create-blog-link:hover {
   background-color: #45a049;
+  transform: translateY(-3px);
 }
 
 .search-sort {
-  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 30px;
 }
 
-.search-sort input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
+.search-sort input,
 .search-sort select {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-right: 10px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  flex: 1;
+  min-width: 200px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
 .blog-list ul {
   list-style-type: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .blog-list li {
-  margin-bottom: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-list li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .blog-link {
@@ -53,25 +73,36 @@
   margin: 0;
   font-size: 1.75rem;
   color: #333;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.blog-date {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 15px;
 }
 
 .blog-link p {
-  color: #555;
+  color: #666;
+  margin-top: 10px;
+  line-height: 1.6;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .pagination button {
-  padding: 10px;
+  padding: 12px 18px;
   margin: 0 5px;
   border: none;
   background-color: #ddd;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 50px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .pagination button.active {
@@ -79,6 +110,7 @@
   color: white;
 }
 
-.pagination button:hover {
+.pagination button:hover:not(.active) {
   background-color: #ccc;
+  transform: translateY(-2px);
 }
