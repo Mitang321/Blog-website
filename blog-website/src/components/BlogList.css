@@ -1,0 +1,41 @@
+.blog-list {
+  padding: 20px;
+}
+
+.search-sort {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search-sort input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-sort select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 15px;
+}
+
+li h2 {
+  margin: 0;
+}
+
+li p {
+  margin: 5px 0 0;
+  color: #555;
+}
