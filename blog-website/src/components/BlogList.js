@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 import "./BlogList.css";
 
 function BlogList() {
@@ -108,7 +109,7 @@ function BlogList() {
         </select>
       </div>
       {loading ? (
-        <p>Loading blogs...</p>
+        <Spinner />
       ) : error ? (
         <p className="error">{error}</p>
       ) : (
@@ -131,6 +132,12 @@ function BlogList() {
             )}
           </ul>
           <div className="pagination">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
             {pageNumbers.map((number) => (
               <button
                 key={number}
@@ -140,6 +147,12 @@ function BlogList() {
                 {number}
               </button>
             ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === pageNumbers.length}
+            >
+              Next
+            </button>
           </div>
         </>
       )}
