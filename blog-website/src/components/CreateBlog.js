@@ -1,63 +1,62 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./CreateBlog.css";
+
 function CreateBlog() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
-
-  const handleTitleChange = (e) => setTitle(e.target.value);
-  const handleBodyChange = (e) => setBody(e.target.value);
-  const handleTagsChange = (e) => setTags(e.target.value);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const newIssue = {
+      title,
+      body,
+      labels: tags.split(",").map((tag) => tag.trim()),
+    };
+
     try {
       await axios.post(
         "https://api.github.com/repos/Mitang321/Blog-Website/issues",
-        {
-          title: title,
-          body: body,
-          labels: tags.split(",").map((tag) => tag.trim()),
-        },
+        newIssue,
         {
           headers: {
             Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
           },
         }
       );
-      alert("Blog created successfully!");
-      setTitle("");
-      setBody("");
-      setTags("");
+      navigate("/");
     } catch (error) {
       console.error("Error creating blog:", error);
-      alert("Error creating blog. Please try again.");
     }
   };
 
   return (
-    <div className="create-blog">
+    <div className="create-blog-container">
       <h1>Create a New Blog</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="create-blog-form">
         <div className="form-group">
-          <label htmlFor="title">Title</label>
+          <label htmlFor="title">Blog Title</label>
           <input
             type="text"
             id="title"
             value={title}
-            onChange={handleTitleChange}
+            onChange={(e) => setTitle(e.target.value)}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="body">Body</label>
+          <label htmlFor="body">Blog Content</label>
           <textarea
             id="body"
             value={body}
-            onChange={handleBodyChange}
+            onChange={(e) => setBody(e.target.value)}
+            rows="10"
             required
-          />
+          ></textarea>
         </div>
         <div className="form-group">
           <label htmlFor="tags">Tags (comma separated)</label>
@@ -65,10 +64,13 @@ function CreateBlog() {
             type="text"
             id="tags"
             value={tags}
-            onChange={handleTagsChange}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="e.g., react, javascript, web development"
           />
         </div>
-        <button type="submit">Create Blog</button>
+        <button type="submit" className="submit-button">
+          Create Blog
+        </button>
       </form>
     </div>
   );

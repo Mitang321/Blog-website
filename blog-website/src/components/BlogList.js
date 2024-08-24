@@ -10,6 +10,9 @@ function BlogList() {
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState("all");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const blogsPerPage = 5;
+
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -57,6 +60,18 @@ function BlogList() {
         : b.title.localeCompare(a.title)
     );
 
+  // Pagination logic
+  const indexOfLastBlog = currentPage * blogsPerPage;
+  const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+  const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredBlogs.length / blogsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="blog-list">
       <h1>Blog List</h1>
@@ -84,8 +99,8 @@ function BlogList() {
         </select>
       </div>
       <ul>
-        {filteredBlogs.length > 0 ? (
-          filteredBlogs.map((blog) => (
+        {currentBlogs.length > 0 ? (
+          currentBlogs.map((blog) => (
             <li key={blog.number}>
               <Link to={`/blog/${blog.number}`} className="blog-link">
                 <h2>{blog.title}</h2>
@@ -97,6 +112,17 @@ function BlogList() {
           <p>No blogs found.</p>
         )}
       </ul>
+      <div className="pagination">
+        {pageNumbers.map((number) => (
+          <button
+            key={number}
+            onClick={() => handlePageChange(number)}
+            className={number === currentPage ? "active" : ""}
+          >
+            {number}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
