@@ -70,7 +70,6 @@ function BlogList() {
         : b.title.localeCompare(a.title)
     );
 
-  // Pagination logic
   const indexOfLastBlog = currentPage * blogsPerPage;
   const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
   const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);

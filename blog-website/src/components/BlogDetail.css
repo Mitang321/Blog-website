@@ -7,6 +7,22 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  color: #4caf50;
+  text-decoration: none;
+  border-radius: 5px;
+  border: 1px solid #4caf50;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.back-link:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
 .blog-title {
   font-size: 2.5rem;
   margin-bottom: 10px;
@@ -42,6 +58,100 @@
   border-radius: 20px;
   color: #333;
   font-size: 0.9rem;
+}
+
+.like-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.like-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.share-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.share-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.comments-section {
+  margin-top: 30px;
+}
+
+.comments-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.comment-form {
+  margin-top: 20px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.comment-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.comment-form button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.comments-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment-item {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-body {
+  margin-top: 5px;
+  color: #555;
 }
 
 .loading {
