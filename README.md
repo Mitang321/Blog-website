@@ -2,6 +2,11 @@
 
 This project is a dynamic blog website built using React. The website allows users to create, view, edit, and delete blog posts. It fetches blog content from a GitHub repository, with each blog post being created as an issue in the repo.
 
+## Live Preview
+
+[Live Preview](https://blog-website-eight-swart.vercel.app/)
+
+
 ## Features
 
 - **Create Blog:** Allows users to create a new blog post.
